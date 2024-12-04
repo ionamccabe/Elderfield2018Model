@@ -1,0 +1,15 @@
+LICENSE.md
+README.md
+setup.py
+Elderfield_2017_Fungicide_Model.egg-info/PKG-INFO
+Elderfield_2017_Fungicide_Model.egg-info/SOURCES.txt
+Elderfield_2017_Fungicide_Model.egg-info/dependency_links.txt
+Elderfield_2017_Fungicide_Model.egg-info/top_level.txt
+fungicide_model/__init__.py
+fungicide_model/constants.py
+fungicide_model/fungicide.py
+fungicide_model/fungicideTreatment.py
+fungicide_model/parameters.py
+fungicide_model/simulation.py
+fungicide_model/stepChange.py
+fungicide_model/types.py

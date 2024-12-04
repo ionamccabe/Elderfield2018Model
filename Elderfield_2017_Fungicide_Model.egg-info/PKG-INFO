@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: eld2018_github
+Version: 1.0
+Summary: Model of fungicide resistance evolution in either wheat septoria leaf blotch or grapevine powdery mildew
+Home-page: 
+Author: James Elderfield
+Author-email: jad.elderfield@gmail.com
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Requires: numpy
+Requires: pandas
+Requires: scipy
+License-File: LICENSE.md
