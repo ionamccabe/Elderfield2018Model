@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(
-    name = "Elderfield 2017 Fungicide Model",
+    name = "eld2018_github",
     version = "1.0",
     description = "Model of fungicide resistance evolution in either wheat septoria leaf blotch or grapevine powdery mildew",
     author = "James Elderfield",
