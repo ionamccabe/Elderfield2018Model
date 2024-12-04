@@ -1,0 +1,15 @@
+LICENSE.md
+README.md
+setup.py
+eld2018_github.egg-info/PKG-INFO
+eld2018_github.egg-info/SOURCES.txt
+eld2018_github.egg-info/dependency_links.txt
+eld2018_github.egg-info/top_level.txt
+fungicide_model/__init__.py
+fungicide_model/constants.py
+fungicide_model/fungicide.py
+fungicide_model/fungicideTreatment.py
+fungicide_model/parameters.py
+fungicide_model/simulation.py
+fungicide_model/stepChange.py
+fungicide_model/types.py
