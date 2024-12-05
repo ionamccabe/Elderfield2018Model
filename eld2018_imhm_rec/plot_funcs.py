@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from params_funcs import *
-from model_funcs import calcLifetimeYield
+from yield_funcs import calcLifetimeYield
 
 def plotDynamics(numSeasons,sWC_output):
     

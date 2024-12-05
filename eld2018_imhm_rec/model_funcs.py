@@ -2,6 +2,7 @@ import numpy as np
 from scipy import integrate
 from params_funcs import *
 from control_funcs import *
+from yield_funcs import calcYield_df
 
 def elderfieldOdeSystem(time,X):
     S, Er, Es, Ir, Is, R, Pr, Ps, Ch, Cl, A = X
@@ -17,12 +18,6 @@ def elderfieldOdeSystem(time,X):
     dCl = -delta_l*Cl
     dA = dS + dEr + dEs + dIr + dIs + dR
     return np.array([dS, dEr, dEs, dIr, dIs, dR, dPr, dPs, dCh, dCl, dA])
-
-def elderfieldOdeSystem_df(time,X):
-    S_df, R_df = X
-    dS_df = plantGrowth(time,S_df) - plantSenescence(time)*S_df
-    dR_df = plantSenescence(time)*S_df
-    return np.array([dS_df, dR_df])
     
 def runChunk(X,time,controlFunction,wantYield, maxCl, maxCh): # integrates over t and adds results to existing array
     S,Er,Es,Ir,Is,R,Pr,Ps,Ch,Cl,A = X

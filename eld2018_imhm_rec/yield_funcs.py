@@ -1,4 +1,12 @@
-from model_funcs import *
+from scipy import integrate
+from params_funcs import *
+import numpy as np
+
+def elderfieldOdeSystem_df(time,X):
+    S_df, R_df = X
+    dS_df = plantGrowth(time,S_df) - plantSenescence(time)*S_df
+    dR_df = plantSenescence(time)*S_df
+    return np.array([dS_df, dR_df])
 
 def calcYield_df(time):
     # integrating up until the start of the time
@@ -24,15 +32,9 @@ def calcYield_df(time):
 
 def calcLifetimeYield(percYield_arr, totalYield_arr, dfYield):
     tY_sum = 0
-    j = 0
     for i in np.arange(0,len(percYield_arr),1):
         if percYield_arr[i] >= 95:
             tY_sum += totalYield_arr[i]
-            j = i + 1
-            
-        elif i == j and j != 1 and j != 0: ####################### MODIFIED to include the season where failure occurs
-            tY_sum += totalYield_arr[i]
-            j = i+1
     ltY = tY_sum / dfYield # defining lifetime yield in terms of multiples of df yield
     return ltY
             

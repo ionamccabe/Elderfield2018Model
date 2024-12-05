@@ -17,8 +17,14 @@ plotDynamics(numS, altLH)
 plotDynamics(numS, altHL)
 plotDynamics(numS, mix)
 
+# %%
+from model_funcs import *
+from control_funcs import *
+from plot_funcs import *
+
 # 30 years
 numS = 30
+maxCl = 1; maxCh = 1
 altLH = systemWithControl(numSeasons = numS, controlFunction = altLowHigh, maxCl = maxCl, maxCh = maxCh)
 altHL = systemWithControl(numSeasons = numS, controlFunction = altHighLow, maxCl = maxCl, maxCh = maxCh)
 mix = systemWithControl(numSeasons = numS, controlFunction = mixture, maxCl = maxCl, maxCh = maxCh)
