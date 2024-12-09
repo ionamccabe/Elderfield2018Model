@@ -3,6 +3,7 @@ sys.path.append(r"C:\Users\ionac\Documents\python\eld2018\Elderfield2018Model\el
 
 import numpy as np
 from scipy import integrate
+from scipy.integrate import simps
 from params_funcs import *
 from control_funcs import *
 from yield_funcs import calcYield_df
@@ -49,7 +50,7 @@ def runChunk(X,time,controlFunction,wantYield, maxCl, maxCh): # integrates over 
     ### Calculating Yield
     if wantYield == True:
         dt = np.diff(soln.t)  # Compute time step sizes
-        totalYield = np.sum((S_t[:-1] + Er_t[:-1] + Es_t[:-1]) * dt)  # integral approximation
+        totalYield = simps(S_t + Er_t + Es_t, soln.t)  # integral approximation
         dfYield = calcYield_df(time)
         percYield = (totalYield / dfYield) * 100
         # print(totalYield,percYield,dfYield)

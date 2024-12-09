@@ -13,6 +13,8 @@ simLH_rec = systemWithControl(numSeasons = numS, controlFunction = altLowHigh, m
 simHL_rec = systemWithControl(numSeasons = numS, controlFunction = altHighLow, maxCl = maxCl, maxCh = maxCh)
 simMix_rec = systemWithControl(numSeasons = numS, controlFunction = mixture, maxCl = maxCl, maxCh = maxCh)
 
+simLH_rec[2]
+
 # GitHub Model
 from fungicide_model import Parameters, SprayStrategies, Model, Simulation
 # Build a parameters object, specifying which model we intend to use
@@ -35,5 +37,10 @@ simMix_github.run()
 
 len(simLH_github.output["S"])
 len(simLH_rec[0][0][-1690:])
-simLH_rec_short = tuple(arr[1212:1212+1689] for arr in simLH_rec[0])
+simLH_rec_short = tuple(arr[1211:1211+1689] for arr in simLH_rec[0])
 len(simLH_rec_short[0])
+
+simLH_github.yields
+
+type(simLH_github.output["S"])
+
