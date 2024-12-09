@@ -1,3 +1,6 @@
+import sys
+sys.path.append(r"C:\Users\ionac\Documents\python\eld2018\Elderfield2018Model\eld2018_imhm_rec")
+
 from params_funcs import t_GS32,t_GS39
 
 def noControl(time,cl_arr,ch_arr, maxCl, maxCh):

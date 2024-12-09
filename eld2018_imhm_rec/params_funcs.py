@@ -1,3 +1,6 @@
+import sys
+sys.path.append(r"C:\Users\ionac\Documents\python\eld2018\Elderfield2018Model\eld2018_imhm_rec")
+
 import math
 
 # transmission parameters
