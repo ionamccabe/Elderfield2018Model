@@ -62,7 +62,7 @@ def runChunk(X,time,controlFunction,wantYield, maxCl, maxCh): # integrates over 
     
     return X_ret, percYield, totalYield, dfYield, controlName
 
-def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True, terminateEarly = False):
+def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True, terminateEarly = False, includeStart = False):
     # year should be divided into five chunks:
     # t_Emerge - t_GS32, t_GS32 - t_GS_39, t_GS39 - t_GS61, t_GS61 - t_GS87, t_GS87 - onwards
     
@@ -81,38 +81,46 @@ def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True
     
     for num in np.arange(1,numSeasons+1,1): 
         # print('Season', num, 'of', numSeasons)
-        time_temp = np.arange(1,t_Emerge,1)
-        
-        for t in time_temp:
+        time_arr = np.array([])
+        if includeStart == True:
+            time_temp = np.arange(1,t_Emerge,1)
+            time_arr = np.append(time_arr,time_temp)
             
-            Pr_temp = psi_temp*phi # updating initial source of innoculum based on psi
-            Ps_temp = (1-psi_temp)*phi
+            for t in time_temp:
+                Pr_temp = psi_temp*phi # updating initial source of innoculum based on psi
+                Ps_temp = (1-psi_temp)*phi
+                
+                S = np.append(S,S0)
+                Er = np.append(Er,Er0)
+                Es = np.append(Es,Es0)
+                Ir = np.append(Ir,Ir0)
+                Is = np.append(Is,Is0)
+                R = np.append(R,R0)
+                Pr = np.append(Pr,Pr_temp)
+                Ps = np.append(Ps,Ps_temp)
+                Ch = np.append(Ch,Ch0)
+                Cl = np.append(Cl,Cl0)
+                A = np.append(A,A0)
             
-            S = np.append(S,S0)
-            Er = np.append(Er,Er0)
-            Es = np.append(Es,Es0)
-            Ir = np.append(Ir,Ir0)
-            Is = np.append(Is,Is0)
-            R = np.append(R,R0)
-            Pr = np.append(Pr,Pr_temp)
-            Ps = np.append(Ps,Ps_temp)
-            Ch = np.append(Ch,Ch0)
-            Cl = np.append(Cl,Cl0)
-            A = np.append(A,A0)
-        
-        X = S,Er,Es,Ir,Is,R,Pr,Ps,Ch,Cl,A
+            X = S,Er,Es,Ir,Is,R,Pr,Ps,Ch,Cl,A
+        else:
+            X = S0,Er0,Es0,Ir0,Is0,R0,Pr0,Ps0,Ch0,Cl0,A0
         
         time_temp = [t_Emerge,t_GS32] # chunk one
         X,pY,tY,dfY,controlName = runChunk(X,time_temp,controlFunction,False, maxCl, maxCh) # solve system of equations
-        
+        time_arr = np.append(time_arr,time_temp)
+
         time_temp = [t_GS32,t_GS39] # chunk two
         X,pY,tY,dfY,controlName = runChunk(X,time_temp,controlFunction,False, maxCl, maxCh)
+        time_arr = np.append(time_arr,time_temp)
         
         time_temp = [t_GS39,t_GS61] # chunk three
         X,pY,tY,dfY,controlName = runChunk(X,time_temp,controlFunction,False, maxCl, maxCh)
+        time_arr = np.append(time_arr,time_temp)
         
         time_temp = [t_GS61,t_GS87] # chunk four
         X,pY4,tY4,dfY4,controlName = runChunk(X,time_temp,controlFunction,True, maxCl, maxCh)
+        time_arr = np.append(time_arr,time_temp)
         
         ### Adding Yield to array
         percYield_array = np.append(percYield_array,pY4)
@@ -142,4 +150,4 @@ def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True
     if printDone == True:
         print('Done: ', numSeasonsYield, 'Seasons with', controlName, 'control')
     
-    return X, percYield_array, totalYield_array, dfYield, psi_array, SR, controlName
+    return X, percYield_array, totalYield_array, dfYield, psi_array, SR, controlName, time_arr
