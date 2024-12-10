@@ -90,9 +90,11 @@ def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True
             time_temp = np.arange(1,t_Emerge,1)
             soln_time = np.arange(time_temp[0],time_temp[1],1)
             time_arr_temp = np.append(time_arr_temp,soln_time)
+            initial_con_time = seasonLength + 1
         else:
             time_temp = [0]
             time_arr_temp = np.append(time_arr_temp,1211)
+            initial_con_time = 1689 + 1
             
         for t in time_temp:
             Pr_temp = psi_temp*phi # updating initial source of innoculum based on psi
@@ -167,7 +169,11 @@ def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True
         print('Done: ', numSeasonsYield, 'Seasons with', controlName, 'control')
     
     X_arr = np.array(X) 
-    indices_to_remove = [(1690 * i) - 1 for i in range(1, numSeasons + 1)]
+    # indices_to_remove = [(initial_con_time * i) - 1 for i in range(1, numSeasons + 1)]
+    indices_to_remove = [0]
+    for i in range(1, numSeasons): # removes initial conditions AND last element of each season (to match James)
+        # Remove 1689th and 1690th elements for all but the last season
+        indices_to_remove.extend([(initial_con_time * i) - 2, (initial_con_time * i) - 1])
 
     # Step 2: Create a mask to retain only the desired columns
     mask = np.ones(X_arr.shape[1], dtype=bool)  # Start with all True
