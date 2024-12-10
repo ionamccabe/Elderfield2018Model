@@ -27,9 +27,7 @@ def calcYield_df(time):
     S_df_chunk2,R_df_chunk2 = y_df_chunk2
     
     # # calulating yield over time frame
-    t_df_chunk2 = soln_df_chunk2.t
-    dt = np.diff(t_df_chunk2)
-    yield_df = np.sum(S_df_chunk2[:-1] * dt)  # Discrete integration
+    yield_df = np.trapezoid(S_df_chunk2) # less similar to github
     
     return yield_df
 
