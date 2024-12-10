@@ -2,6 +2,8 @@
 import sys
 sys.path.append(r"C:\Users\ionac\Documents\python\eld2018\Elderfield2018Model")
 
+import pandas as pd
+
 # My recreation
 from eld2018_imhm_rec.model_funcs import *
 from eld2018_imhm_rec.control_funcs import *
@@ -34,13 +36,13 @@ simLH_github.run()
 simHL_github.run()
 simMix_github.run()
 
+### Comparing df
+state_classes = ['S', 'ER', 'ES', 'IR', 'IS', 'R', 'PR', 'PS']
+state_classes_df = pd.DataFrame()
+for i, state in enumerate(state_classes):
+    state_classes_df[f'GitHub {state}'] = simLH_github.output[state]
+    state_classes_df[f'Rec {state}'] = simLH_rec[0][i]
 
-len(simLH_github.output["S"])
-len(simLH_rec[0][0][-1690:])
-simLH_rec_short = tuple(arr[1211:1211+1689] for arr in simLH_rec[0])
-len(simLH_rec_short[0])
 
-simLH_github.yields
 
-type(simLH_github.output["S"])
 

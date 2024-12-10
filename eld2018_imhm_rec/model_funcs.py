@@ -91,6 +91,7 @@ def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True
             time_arr = np.append(time_arr,soln_time)
         else:
             time_temp = [0]
+            time_arr = np.append(time_arr,1211)
             
         for t in time_temp:
             Pr_temp = psi_temp*phi # updating initial source of innoculum based on psi
@@ -110,7 +111,7 @@ def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True
         
         X = S,Er,Es,Ir,Is,R,Pr,Ps,Ch,Cl,A
         
-        time_temp = [t_Emerge,t_GS32] # chunk one
+        time_temp = [t_Emerge,t_GS32] # chunk one, already did t = t_Emerge
         X,pY,tY,dfY,controlName,soln_time = runChunk(X,time_temp,controlFunction,False, maxCl, maxCh) # solve system of equations
         time_arr = np.append(time_arr,soln_time)
 
@@ -121,8 +122,13 @@ def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True
         time_temp = [t_GS39,t_GS61] # chunk three
         X,pY,tY,dfY,controlName,soln_time = runChunk(X,time_temp,controlFunction,False, maxCl, maxCh)
         time_arr = np.append(time_arr,soln_time)
-        
-        time_temp = [t_GS61,t_GS87] # chunk four
+
+        if includeStart == True:
+            endTime = t_GS87
+        else:
+            endTime = t_GS87 + 1
+
+        time_temp = [t_GS61,endTime] # chunk four
         X,pY4,tY4,dfY4,controlName,soln_time = runChunk(X,time_temp,controlFunction,True, maxCl, maxCh)
         time_arr = np.append(time_arr,soln_time)
         
@@ -148,7 +154,7 @@ def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True
             initialPropR = Pr0/(Pr0 + Ps0)
             SR = psi_temp/initialPropR
         ###
-        
+
         numSeasonsYield += 1
         if pY4 < 95 and terminateEarly == True:
             break
@@ -156,4 +162,9 @@ def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True
     if printDone == True:
         print('Done: ', numSeasonsYield, 'Seasons with', controlName, 'control')
     
-    return X, percYield_array, totalYield_array, dfYield, psi_array, SR, controlName, time_arr
+    X_arr = np.array([state[1:] for state in X])
+    X_tup = tuple(X_arr)
+    
+    time_arr = time_arr[1:]
+
+    return X_tup, percYield_array, totalYield_array, dfYield, psi_array, SR, controlName, time_arr
