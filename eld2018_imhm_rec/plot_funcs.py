@@ -13,7 +13,7 @@ def plotDynamics(numSeasons,sWC_output):
     
     S,Er,Es,Ir,Is,R,Pr,Ps,Ch,Cl,A = X
     
-    t = np.arange(0,seasonLength*numSeasons,1) # t for plotting
+    t = time # t for plotting
     
     season_ticks = np.arange(0, seasonLength * numSeasons+1, seasonLength) # make x axis seasons
     season_labels = np.arange(0,numSeasons+1,1)
