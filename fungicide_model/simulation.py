@@ -255,12 +255,12 @@ class Simulation(object):
                 t += self.params.GS32 - self.params.seasonStartTime
                 if self.params.strategy == SprayStrategies.NoSpray:
                     pass
-                elif self.params.strategy == SprayStrategies.Mixture:
+                elif self.params.strategy == SprayStrategies.Mixture: ### CHANGED: divided dose by 2
                     changes.append(StepChange(
-                        StateIndices.high, t, self.params.highRiskDose, StepChangeKind.SET, self.params
+                        StateIndices.high, t, self.params.highRiskDose/2, StepChangeKind.SET, self.params
                     ))
                     changes.append(StepChange(
-                        StateIndices.low, t, self.params.lowRiskDose, StepChangeKind.SET, self.params
+                        StateIndices.low, t, self.params.lowRiskDose/2, StepChangeKind.SET, self.params
                     ))
                 elif self.params.strategy == SprayStrategies.AltHiLo:
                     changes.append(StepChange(
@@ -283,12 +283,12 @@ class Simulation(object):
                 t += self.params.GS39 - self.params.GS32
                 if self.params.strategy == SprayStrategies.NoSpray:
                     pass
-                elif self.params.strategy == SprayStrategies.Mixture:
+                elif self.params.strategy == SprayStrategies.Mixture: ### CHANGED: divided dose by 2
                     changes.append(StepChange(
-                        StateIndices.high, t, self.params.highRiskDose, StepChangeKind.ADD, self.params
+                        StateIndices.high, t, self.params.highRiskDose/2, StepChangeKind.ADD, self.params
                     ))
                     changes.append(StepChange(
-                        StateIndices.low, t, self.params.lowRiskDose, StepChangeKind.ADD, self.params
+                        StateIndices.low, t, self.params.lowRiskDose/2, StepChangeKind.ADD, self.params
                     ))
                 elif self.params.strategy == SprayStrategies.AltHiLo:
                     changes.append(StepChange(
