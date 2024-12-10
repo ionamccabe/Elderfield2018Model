@@ -115,4 +115,16 @@ print('LH Lifetime Yield Rec: ', lty_LH_rec)
 # lty_df['Perc Diff LH'] = 
 
 
+from matplotlib import pyplot as plt
+
+fig, ax = plt.subplots()
+
+# Plot out the amount of healthy tissue over time
+ax.plot(
+    simMix_github.output.index,
+    simMix_github.output["low"],
+    color = "#006000"
+)
+
+plt.show()
 
