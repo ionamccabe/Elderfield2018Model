@@ -53,7 +53,7 @@ def runChunk(X,time,controlFunction,wantYield, maxCl, maxCh): # integrates over 
     if wantYield == True:
         dt = np.diff(soln.t)  # Compute time step sizes
         yield_metrics = S_t + Er_t + Es_t
-        totalYield = simpson(y = yield_metrics, x = soln.t)  # integral approximation
+        totalYield = np.trapezoid(y = yield_metrics, x = soln.t)  # integral approximation
         dfYield = calcYield_df(time)
         percYield = (totalYield / dfYield) * 100
         # print(totalYield,percYield,dfYield)
@@ -80,18 +80,19 @@ def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True
   
     psi_temp = psi  
     numSeasonsYield = 0
+    time_arr = np.array([])
     
     
     for num in np.arange(1,numSeasons+1,1): 
         # print('Season', num, 'of', numSeasons)
-        time_arr = np.array([])
+        time_arr_temp = np.array([])
         if includeStart == True:
             time_temp = np.arange(1,t_Emerge,1)
             soln_time = np.arange(time_temp[0],time_temp[1],1)
-            time_arr = np.append(time_arr,soln_time)
+            time_arr_temp = np.append(time_arr_temp,soln_time)
         else:
             time_temp = [0]
-            time_arr = np.append(time_arr,1211)
+            time_arr_temp = np.append(time_arr_temp,1211)
             
         for t in time_temp:
             Pr_temp = psi_temp*phi # updating initial source of innoculum based on psi
@@ -113,15 +114,15 @@ def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True
         
         time_temp = [t_Emerge,t_GS32] # chunk one, already did t = t_Emerge
         X,pY,tY,dfY,controlName,soln_time = runChunk(X,time_temp,controlFunction,False, maxCl, maxCh) # solve system of equations
-        time_arr = np.append(time_arr,soln_time)
+        time_arr_temp = np.append(time_arr_temp,soln_time)
 
         time_temp = [t_GS32,t_GS39] # chunk two
         X,pY,tY,dfY,controlName,soln_time = runChunk(X,time_temp,controlFunction,False, maxCl, maxCh)
-        time_arr = np.append(time_arr,soln_time)
+        time_arr_temp = np.append(time_arr_temp,soln_time)
         
         time_temp = [t_GS39,t_GS61] # chunk three
         X,pY,tY,dfY,controlName,soln_time = runChunk(X,time_temp,controlFunction,False, maxCl, maxCh)
-        time_arr = np.append(time_arr,soln_time)
+        time_arr_temp = np.append(time_arr_temp,soln_time)
 
         if includeStart == True:
             endTime = t_GS87
@@ -130,7 +131,7 @@ def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True
 
         time_temp = [t_GS61,endTime] # chunk four
         X,pY4,tY4,dfY4,controlName,soln_time = runChunk(X,time_temp,controlFunction,True, maxCl, maxCh)
-        time_arr = np.append(time_arr,soln_time)
+        time_arr_temp = np.append(time_arr_temp,soln_time)
         
         ### Adding Yield to array
         percYield_array = np.append(percYield_array,pY4)
@@ -141,7 +142,7 @@ def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True
         if includeStart == True:
             time_temp = [t_GS87,seasonLength+1] # chunk four
             X,pY,tY,dfY,controlName,soln_time = runChunk(X,time_temp,controlFunction,False, maxCl, maxCh)
-            time_arr = np.append(time_arr,soln_time)
+            time_arr_temp = np.append(time_arr_temp,soln_time)
 
         ### Updating psi
         S,Er,Es,Ir,Is,R,Pr,Ps,Ch,Cl,A = X
@@ -159,12 +160,22 @@ def systemWithControl(numSeasons,controlFunction, maxCl, maxCh, printDone = True
         if pY4 < 95 and terminateEarly == True:
             break
 
+        time_arr_temp = time_arr_temp[1:]
+        time_arr = np.append(time_arr, time_arr_temp)
+
     if printDone == True:
         print('Done: ', numSeasonsYield, 'Seasons with', controlName, 'control')
     
-    X_arr = np.array([state[1:] for state in X])
-    X_tup = tuple(X_arr)
-    
-    time_arr = time_arr[1:]
+    X_arr = np.array(X) 
+    indices_to_remove = [(1690 * i) - 1 for i in range(1, numSeasons + 1)]
+
+    # Step 2: Create a mask to retain only the desired columns
+    mask = np.ones(X_arr.shape[1], dtype=bool)  # Start with all True
+    mask[indices_to_remove] = False  # Set 1690th, 3380th, etc., to False
+
+    # Step 3: Apply the mask to remove columns
+    processed_X = X_arr[:, mask]
+    # X_arr = np.array([state[1:] for state in X])
+    X_tup = tuple(processed_X)
 
     return X_tup, percYield_array, totalYield_array, dfYield, psi_array, SR, controlName, time_arr
