@@ -18,9 +18,9 @@ for i in tqdm(doseHR):
     altHL = systemWithControl(numSeasons = numS, controlFunction = altHighLow, maxCl = maxCl, maxCh = doseHighRisk, printDone = False)
     mix = systemWithControl(numSeasons = numS, controlFunction = mixture, maxCl = maxCl, maxCh = doseHighRisk, printDone = False)
 
-    X_altLH, percYield_altLH, totalYield_altLH, dfYield_altLH, Psi_altLH, SR_altLH_temp, controlName_altLH = altLH
-    X_altHL, percYield_altHL, totalYield_altHL, dfYield_altHL, Psi_altHL, SR_altHL_temp, controlName_altHL = altHL
-    X_mix, percYield_mix, totalYield_mix, dfYield_mix, Psi_mix, SR_mix_temp, controlName_mix = mix
+    X_altLH, percYield_altLH, totalYield_altLH, dfYield_altLH, Psi_altLH, SR_altLH_temp, controlName_altLH, t_altLH = altLH
+    X_altHL, percYield_altHL, totalYield_altHL, dfYield_altHL, Psi_altHL, SR_altHL_temp, controlName_altHL, t_altHL = altHL
+    X_mix, percYield_mix, totalYield_mix, dfYield_mix, Psi_mix, SR_mix_temp, controlName_mix, t_mix = mix
     
     ### Plot C
     fsy_altLH_temp = totalYield_altLH[0] / dfYield_altLH
@@ -48,9 +48,9 @@ for i in tqdm(doseHR):
     altHL = systemWithControl(numSeasons = numS, controlFunction = altHighLow, maxCl = maxCl, maxCh = doseHighRisk, printDone = False, terminateEarly = False)
     mix = systemWithControl(numSeasons = numS, controlFunction = mixture, maxCl = maxCl, maxCh = doseHighRisk, printDone = False, terminateEarly = False)
     
-    X_altLH, percYield_altLH, totalYield_altLH, dfYield_altLH, Psi_altLH, SR_altLH_temp, controlName_altLH = altLH
-    X_altHL, percYield_altHL, totalYield_altHL, dfYield_altHL, Psi_altHL, SR_altHL_temp, controlName_altHL = altHL
-    X_mix, percYield_mix, totalYield_mix, dfYield_mix, Psi_mix, SR_mix_temp, controlName_mix = mix
+    X_altLH, percYield_altLH, totalYield_altLH, dfYield_altLH, Psi_altLH, SR_altLH_temp, controlName_altLH, t_altLH = altLH
+    X_altHL, percYield_altHL, totalYield_altHL, dfYield_altHL, Psi_altHL, SR_altHL_temp, controlName_altHL, t_altHL = altHL
+    X_mix, percYield_mix, totalYield_mix, dfYield_mix, Psi_mix, SR_mix_temp, controlName_mix, t_mix = mix
     
     ly_altLH_temp = calcLifetimeYield(percYield_altLH, totalYield_altLH, dfYield_altLH)
     ly_altHL_temp = calcLifetimeYield(percYield_altHL, totalYield_altHL, dfYield_altHL)
@@ -98,6 +98,15 @@ plt.tight_layout()
 plt.show()
 
 #%% Fig 4 Plots A and B
+import numpy as np
+from model_funcs import systemWithControl
+from control_funcs import *
+from tqdm import tqdm
+from yield_funcs import *
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+
+
 doseHR = np.arange(0.6,1.05,0.05)
 doseLR = np.arange(0.25,1.05,0.05)
 
@@ -116,9 +125,9 @@ for j, doseLowRisk in enumerate(tqdm(doseLR)):
         mix = systemWithControl(numSeasons=numS, controlFunction=mixture, maxCl=doseLowRisk, maxCh=doseHighRisk, printDone=False)
     
         # Extract data from systemWithControl function
-        X_altLH, percYield_altLH, totalYield_altLH, dfYield_altLH, Psi_altLH, SR_altLH_temp, controlName_altLH = altLH
-        X_altHL, percYield_altHL, totalYield_altHL, dfYield_altHL, Psi_altHL, SR_altHL_temp, controlName_altHL = altHL
-        X_mix, percYield_mix, totalYield_mix, dfYield_mix, Psi_mix, SR_mix_temp, controlName_mix = mix
+        X_altLH, percYield_altLH, totalYield_altLH, dfYield_altLH, Psi_altLH, SR_altLH_temp, controlName_altLH, t_altLH = altLH
+        X_altHL, percYield_altHL, totalYield_altHL, dfYield_altHL, Psi_altHL, SR_altHL_temp, controlName_altHL, t_altHL = altHL
+        X_mix, percYield_mix, totalYield_mix, dfYield_mix, Psi_mix, SR_mix_temp, controlName_mix, t_mix = mix
         
         # Plot A (for SR values)
         mixSR = SR_mix_temp
@@ -143,9 +152,9 @@ for j, doseLowRisk in enumerate(tqdm(doseLR)):
         mix = systemWithControl(numSeasons=numS, controlFunction=mixture, maxCl=doseLowRisk, maxCh=doseHighRisk, printDone=False, terminateEarly = True)
     
         # Extract data from systemWithControl function
-        X_altLH, percYield_altLH, totalYield_altLH, dfYield_altLH, Psi_altLH, SR_altLH_temp, controlName_altLH = altLH
-        X_altHL, percYield_altHL, totalYield_altHL, dfYield_altHL, Psi_altHL, SR_altHL_temp, controlName_altHL = altHL
-        X_mix, percYield_mix, totalYield_mix, dfYield_mix, Psi_mix, SR_mix_temp, controlName_mix = mix
+        X_altLH, percYield_altLH, totalYield_altLH, dfYield_altLH, Psi_altLH, SR_altLH_temp, controlName_altLH, t_altLH = altLH
+        X_altHL, percYield_altHL, totalYield_altHL, dfYield_altHL, Psi_altHL, SR_altHL_temp, controlName_altHL, t_altHL = altHL
+        X_mix, percYield_mix, totalYield_mix, dfYield_mix, Psi_mix, SR_mix_temp, controlName_mix, t_mix = mix
 
         # Plot B (for LY values)
         ly_altLH_temp = calcLifetimeYield(percYield_altLH, totalYield_altLH, dfYield_altLH)

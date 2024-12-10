@@ -9,7 +9,7 @@ from yield_funcs import calcLifetimeYield
 
 def plotDynamics(numSeasons,sWC_output):
     
-    X, percYield, totalYield, dfYield, Psi, SR, controlName = sWC_output
+    X, percYield, totalYield, dfYield, Psi, SR, controlName, time = sWC_output
     
     S,Er,Es,Ir,Is,R,Pr,Ps,Ch,Cl,A = X
     
@@ -93,9 +93,9 @@ def plotDynamics(numSeasons,sWC_output):
     plt.show()
 
 def plotComparison(numSeasons, sWC_output1, sWC_output2, sWC_output3):
-    X1, percYield1, totalYield1, dfYield1, Psi1, SR1, controlName1 = sWC_output1
-    X2, percYield2, totalYield2, dfYield2, Psi2, SR2, controlName2 = sWC_output2
-    X3, percYield3, totalYield3, dfYield3, Psi3, SR3, controlName3 = sWC_output3
+    X1, percYield1, totalYield1, dfYield1, Psi1, SR1, controlName1, t1 = sWC_output1
+    X2, percYield2, totalYield2, dfYield2, Psi2, SR2, controlName2, t2 = sWC_output2
+    X3, percYield3, totalYield3, dfYield3, Psi3, SR3, controlName3, t3 = sWC_output3
     
     tYield = np.arange(0,numSeasons,1) # for 
     
