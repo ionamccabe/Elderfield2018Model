@@ -273,6 +273,24 @@ mix_ly_abs = abs(ly_mix_github - ly_mix_rec)
 mix_ly_percDiff = mix_ly_abs / mix_ly_avg * 100
 fig4_df['LTY Mix'] = mix_ly_percDiff
 
+# DF yield
+LH_df_abs = abs(simLH_github.diseaseFreeYield - dfYield_altLH_rec/2)
+HL_df_abs = abs(simHL_github.diseaseFreeYield - dfYield_altHL_rec/2)
+mix_df_abs = abs(simMix_github.diseaseFreeYield - dfYield_mix_rec/2)
+
+LH_df_avg = (simLH_github.diseaseFreeYield + dfYield_altLH_rec/2)/2
+HL_df_avg = (simHL_github.diseaseFreeYield + dfYield_altHL_rec/2)/2
+mix_df_avg = (simMix_github.diseaseFreeYield + dfYield_mix_rec/2)/2
+
+LH_df_percDiff = LH_df_abs / LH_df_avg * 100
+HL_df_percDiff = HL_df_abs / HL_df_avg * 100
+mix_df_percDiff =mix_df_abs / mix_df_avg * 100
+
+fig4_df['DFY LH'] = LH_df_percDiff
+fig4_df['DFY HL'] = HL_df_percDiff
+fig4_df['DFY Mix'] = mix_df_percDiff
+
+
 
 # Calculate the max value for each column
 max_values = fig4_df.max()
@@ -288,5 +306,7 @@ fig4_max_df = pd.DataFrame({
 
 # Rename the rows to indicate what they represent
 fig4_max_df.index = ['Max Value', 'Count >= 5']
+
+print('DFY GitHub: ',simLH_github.diseaseFreeYield,'    DFY Rec: ',dfYield_altLH_rec/2)
 
 # %%
