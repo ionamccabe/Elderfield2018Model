@@ -55,14 +55,17 @@ for i, state in enumerate(state_classes):
     LH_avg = (simLH_github.output[state] + simLH_rec[0][i])/2
     LH_abs_diff = abs(simLH_github.output[state] - simLH_rec[0][i])
     LH_perc_diff_df[f'Diff {state}'] = LH_abs_diff / LH_avg * 100
+    LH_perc_diff_df[f'Actual Diff {state}'] = LH_abs_diff
 
     HL_avg = (simHL_github.output[state] + simHL_rec[0][i])/2
     HL_abs_diff = abs(simHL_github.output[state] - simHL_rec[0][i])
     HL_perc_diff_df[f'Diff {state}'] = HL_abs_diff / HL_avg * 100
+    HL_perc_diff_df[f'Actual Diff {state}'] = HL_abs_diff
 
     Mix_avg = (simMix_github.output[state] + simMix_rec[0][i])/2
     Mix_abs_diff = abs(simMix_github.output[state] - simMix_rec[0][i])
     Mix_perc_diff_df[f'Diff {state}'] = Mix_abs_diff / Mix_avg * 100
+    Mix_perc_diff_df[f'Actual Diff {state}'] = Mix_abs_diff
 
 ### Making Percent Difference Yield DF
 yield_df = pd.DataFrame()
@@ -158,6 +161,22 @@ def filter_large_differences(perc_diff_df, state_classes_df):
 LH_state_big_diff_df = filter_large_differences(LH_perc_diff_df, LH_state_classes_df)
 HL_state_big_diff_df = filter_large_differences(HL_perc_diff_df, HL_state_classes_df)
 Mix_state_big_diff_df = filter_large_differences(Mix_perc_diff_df, Mix_state_classes_df)
+
+
+# %%
+numS = 1
+
+### My recreation
+from eld2018_imhm_rec.model_funcs import *
+from eld2018_imhm_rec.control_funcs import *
+from eld2018_imhm_rec.plot_funcs import *
+# running the simulation
+maxCl = 1; maxCh = 1
+simLH_rec = systemWithControl(numSeasons = numS, controlFunction = altLowHigh, maxCl = maxCl, maxCh = maxCh)
+simHL_rec = systemWithControl(numSeasons = numS, controlFunction = altHighLow, maxCl = maxCl, maxCh = maxCh)
+simMix_rec = systemWithControl(numSeasons = numS, controlFunction = mixture, maxCl = maxCl, maxCh = maxCh)
+
+print('Rec LH DFY: ', simLH_rec[3]/2, '    GitHub LH DFY: ', simLH_github.diseaseFreeYield)
 
 
 # %%

@@ -51,7 +51,6 @@ def runChunk(X,time,controlFunction,wantYield, maxCl, maxCh): # integrates over 
     
     ### Calculating Yield
     if wantYield == True:
-        dt = np.diff(soln.t)  # Compute time step sizes
         yield_metrics = S_t + Er_t + Es_t
         totalYield = np.trapezoid(y = yield_metrics, x = soln.t)  # integral approximation
         dfYield = calcYield_df(time)

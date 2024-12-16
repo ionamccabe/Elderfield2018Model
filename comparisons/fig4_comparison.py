@@ -1,10 +1,17 @@
 #%% Fig 4 plots C, D and E
+
+import sys
+sys.path.append(r"C:\Users\ionac\Documents\python\eld2018\Elderfield2018Model")
+
 import numpy as np
-from model_funcs import systemWithControl
-from control_funcs import *
 from tqdm import tqdm
-from yield_funcs import *
 import matplotlib.pyplot as plt
+
+
+from eld2018_imhm_rec.model_funcs import systemWithControl
+from eld2018_imhm_rec.control_funcs import *
+from eld2018_imhm_rec.yield_funcs import *
+
 
 doseHR = np.arange(0,1.025,0.025)
 fsy_altLH_rec = np.array([]); fsy_altHL_rec = np.array([]); fsy_mix_rec = np.array([])
@@ -66,7 +73,7 @@ fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 # Plot 1: First Season Yield
 axes[0].grid()
 axes[0].set_title("First Season Yield")
-axes[0].plot(doseHR, fsy_mix_rec, 'r', label='mix_recture')
+axes[0].plot(doseHR, fsy_mix_rec, 'r', label='mixture')
 axes[0].plot(doseHR, fsy_altHL_rec, 'g', label='Alt High Low')
 axes[0].plot(doseHR, fsy_altLH_rec, 'b', label='Alt Low High')
 axes[0].set_xlabel('High-Risk Dose')
@@ -76,7 +83,7 @@ axes[0].legend()
 # Plot 2: Selection Ratio (swapped with Lifetime Yield)
 axes[1].grid()
 axes[1].set_title("Selection Ratio")
-axes[1].plot(doseHR, SR_mix_rec, 'r', label='mix_recture')
+axes[1].plot(doseHR, SR_mix_rec, 'r', label='mixture')
 axes[1].plot(doseHR, SR_altHL_rec, 'g', label='Alt High Low')
 axes[1].plot(doseHR, SR_altLH_rec, 'b', label='Alt Low High')
 axes[1].set_xlabel('High-Risk Dose')
@@ -86,7 +93,7 @@ axes[1].legend()
 # Plot 3: Lifetime Yield (swapped with Selection Ratio)
 axes[2].grid()
 axes[2].set_title("Lifetime Yield")
-axes[2].plot(doseHR, ly_mix_rec, 'r', label='mix_recture')
+axes[2].plot(doseHR, ly_mix_rec, 'r', label='mixture')
 axes[2].plot(doseHR, ly_altHL_rec, 'g', label='Alt High Low')
 axes[2].plot(doseHR, ly_altLH_rec, 'b', label='Alt Low High')
 axes[2].set_xlabel('High-Risk Dose')
@@ -102,10 +109,10 @@ plt.show()
 
 #%%
 import numpy as np
-from model_funcs import systemWithControl
-from control_funcs import *
+from eld2018_imhm_rec.model_funcs import systemWithControl
+from eld2018_imhm_rec.control_funcs import *
 from tqdm import tqdm
-from yield_funcs import *
+from eld2018_imhm_rec.yield_funcs import *
 import matplotlib.pyplot as plt
 from fungicide_model import Parameters, SprayStrategies, Model, Simulation
 
@@ -186,7 +193,7 @@ fig, axes = plt.subplots(1, 3, figsize=(18, 6))
 # Plot 1: First Season Yield
 axes[0].grid()
 axes[0].set_title("First Season Yield")
-axes[0].plot(doseHR, fsy_mix_github, 'r', label='mix_githubture')
+axes[0].plot(doseHR, fsy_mix_github, 'r', label='mixture')
 axes[0].plot(doseHR, fsy_altHL_github, 'g', label='Alt High Low')
 axes[0].plot(doseHR, fsy_altLH_github, 'b', label='Alt Low High')
 axes[0].set_xlabel('High-Risk Dose')
@@ -196,7 +203,7 @@ axes[0].legend()
 # Plot 2: Selection Ratio (swapped with Lifetime Yield)
 axes[1].grid()
 axes[1].set_title("Selection Ratio")
-axes[1].plot(doseHR, SR_mix_github, 'r', label='mix_githubture')
+axes[1].plot(doseHR, SR_mix_github, 'r', label='mixture')
 axes[1].plot(doseHR, SR_altHL_github, 'g', label='Alt High Low')
 axes[1].plot(doseHR, SR_altLH_github, 'b', label='Alt Low High')
 axes[1].set_xlabel('High-Risk Dose')
@@ -206,7 +213,7 @@ axes[1].legend()
 # Plot 3: Lifetime Yield (swapped with Selection Ratio)
 axes[2].grid()
 axes[2].set_title("Lifetime Yield")
-axes[2].plot(doseHR, ly_mix_github, 'r', label='mix_githubture')
+axes[2].plot(doseHR, ly_mix_github, 'r', label='mixture')
 axes[2].plot(doseHR, ly_altHL_github, 'g', label='Alt High Low')
 axes[2].plot(doseHR, ly_altLH_github, 'b', label='Alt Low High')
 axes[2].set_xlabel('High-Risk Dose')
