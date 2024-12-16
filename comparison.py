@@ -119,7 +119,7 @@ from matplotlib import pyplot as plt
 
 fig, ax = plt.subplots()
 
-# Plot out the amount of healthy tissue over time
+# Plot
 ax.plot(
     simMix_github.output.index,
     simMix_github.output["low"],
@@ -128,3 +128,36 @@ ax.plot(
 
 plt.show()
 
+# %% finding cases where % error > 10
+# Step 1: Filter rows/columns with percent difference > 10
+# Define a function to extract rows where percent difference > 10
+def filter_large_differences(perc_diff_df, state_classes_df):
+    result_rows = []
+    
+    for col in perc_diff_df.columns:
+        state = col.split(' ')[1]  # Extract the state (e.g., 'S', 'ER')
+        for idx in perc_diff_df.index[perc_diff_df[col] > 10]:  # Rows where percent diff > 10
+            percent_diff = perc_diff_df.loc[idx, col]
+            github_value = state_classes_df.loc[idx, f'GitHub {state}']
+            rec_value = state_classes_df.loc[idx, f'Rec {state}']
+            t = idx  # Use index as time
+            
+            # Add to results
+            result_rows.append({
+                'Time': t,
+                'State': state,
+                'Percent Difference': percent_diff,
+                'GitHub Value': github_value,
+                'Rec Value': rec_value
+            })
+    
+    # Convert the results into a DataFrame
+    return pd.DataFrame(result_rows)
+
+# Use the function for LH, HL, and Mix
+LH_state_big_diff_df = filter_large_differences(LH_perc_diff_df, LH_state_classes_df)
+HL_state_big_diff_df = filter_large_differences(HL_perc_diff_df, HL_state_classes_df)
+Mix_state_big_diff_df = filter_large_differences(Mix_perc_diff_df, Mix_state_classes_df)
+
+
+# %%
