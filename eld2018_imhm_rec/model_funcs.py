@@ -31,7 +31,7 @@ def runChunk(X,time,controlFunction,wantYield, maxCl, maxCh): # integrates over 
         if v < 0:
             X_startcon[i] = 0 # makes sure values are not negative
     
-    soln = integrate.solve_ivp(fun = elderfieldOdeSystem, y0 = X_startcon, t_span = time, t_eval = np.arange(time[0],time[1],1)) # solve system of equations
+    soln = integrate.solve_ivp(fun = elderfieldOdeSystem, y0 = X_startcon, t_span = time, t_eval = np.arange(time[0],time[1],1), method = 'LSODA') # solve system of equations
     y = soln.y # extract vectors from the solution
     S_t, Er_t, Es_t, Ir_t, Is_t, R_t, Pr_t, Ps_t, Ch_t, Cl_t, A_t = y # split into vectors
     S = np.append(S,S_t)
