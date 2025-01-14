@@ -104,9 +104,9 @@ X_altLH, percYield_altLH, totalYield_altLH, dfYield_altLH, Psi_altLH, SR_altLH_t
 X_altHL, percYield_altHL, totalYield_altHL, dfYield_altHL, Psi_altHL, SR_altHL_temp, controlName_altHL, t_altHL = simHL_rec
 X_mix, percYield_mix, totalYield_mix, dfYield_mix, Psi_mix, SR_mix_temp, controlName_mix, t_mix = simMix_rec
 
-lty_LH_rec = calcLifetimeYield(percYield_altLH,totalYield_altLH,dfYield_altLH)
-lty_HL_rec = calcLifetimeYield(percYield_altHL,totalYield_altHL,dfYield_altHL)
-lty_mix_rec = calcLifetimeYield(percYield_mix,totalYield_mix,dfYield_mix)
+lty_LH_rec = calcLifetimeYield(totalYield_altLH,dfYield_altLH)
+lty_HL_rec = calcLifetimeYield(totalYield_altHL,dfYield_altHL)
+lty_mix_rec = calcLifetimeYield(totalYield_mix,dfYield_mix)
 
 # making a df
 # LH_avg_lty = (simLH_github.yieldTilCriticalLoss + lty_LH_rec)/2 # LH
