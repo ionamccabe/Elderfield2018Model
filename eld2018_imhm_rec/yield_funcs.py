@@ -31,15 +31,6 @@ def calcYield_df(time):
     
     return yield_df
 
-# def calcLifetimeYield(percYield_arr, totalYield_arr, dfYield):
-#     tY_sum = 0
-#     for i in np.arange(0,len(percYield_arr),1):
-#         tY_sum += totalYield_arr[i]
-#         if percYield_arr[i] < 95:
-#             break
-#     ltY = tY_sum / dfYield # defining lifetime yield in terms of multiples of df yield
-#     return ltY
-
 def calcLifetimeYield(totalYield_arr, dfYield):
     tY_sum = 0
     for y in totalYield_arr:
