@@ -33,10 +33,14 @@ def calcYield_df(time):
 
 def calcLifetimeYield(totalYield_arr, dfYield):
     tY_sum = 0
+    seasonCount = 0
     for y in totalYield_arr:
         tY_sum += y
+        seasonCount += 1
+        oldY = y
         if y < (0.95 * dfYield):
             break
     ltY = tY_sum / dfYield # defining lifetime yield in terms of multiples of df yield
-    return ltY
+    finalYieldPerc = oldY/dfYield
+    return ltY, finalYieldPerc, seasonCount
             

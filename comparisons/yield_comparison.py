@@ -11,6 +11,7 @@ from eld2018_imhm_rec.plot_funcs import *
 # GitHub
 from fungicide_model import Parameters, SprayStrategies, Model, Simulation
 
+#%%
 ### Running Models
 numS = 30
 # Recreation
@@ -127,22 +128,6 @@ for dose in tqdm(doseHR):
     simHL_github.run()
     simMix_github.run()
 
-    # # Caclulating Percent Yield
-    # LH_perc_yield_rec = (simLH_rec[2]/2) / dfyRec * 100
-    # LH_perc_yield_github = simLH_github.yields / dfyGithub * 100
-    # HL_perc_yield_rec = (simHL_rec[2]/2) / dfyRec * 100
-    # HL_perc_yield_github = simHL_github.yields / dfyGithub * 100
-    # Mix_perc_yield_rec = (simMix_rec[2]/2) / dfyRec * 100
-    # Mix_perc_yield_github = simMix_github.yields / dfyGithub * 100
-
-    # # Calculating Lifetime Yield
-    # LH_lty_rec_temp = calcLifetimeYield(LH_perc_yield_rec,(simLH_rec[2]/2),dfyRec)
-    # HL_lty_rec_temp = calcLifetimeYield(HL_perc_yield_rec,(simHL_rec[2]/2),dfyRec)
-    # Mix_lty_rec_temp = calcLifetimeYield(LH_perc_yield_rec,(simLH_rec[2]/2),dfyRec)
-    # LH_lty_github_temp = calcLifetimeYield(LH_perc_yield_github,simLH_github.yields,dfyGithub)
-    # HL_lty_github_temp = calcLifetimeYield(HL_perc_yield_github,simHL_github.yields,dfyGithub)
-    # Mix_lty_github_temp = calcLifetimeYield(LH_perc_yield_github,simMix_github.yields,dfyGithub)
-
     # Calculating Lifetime Yield
     LH_lty_rec_temp = calcLifetimeYield((simLH_rec[2]/2),dfyRec)
     HL_lty_rec_temp = calcLifetimeYield((simHL_rec[2]/2),dfyRec)
@@ -189,5 +174,30 @@ fig.suptitle('Lifetime Yield', fontsize=16)
 # Adjust layout
 plt.tight_layout()
 plt.show()
+
+# %% looking when Ch = 0.6
+numS = 30
+maxCl = 1; maxCh = 0.6
+
+# Recreation
+simLH_rec = systemWithControl(numSeasons = numS, controlFunction = altLowHigh, maxCl = maxCl, maxCh = maxCh, printDone=False)
+# GitHub
+params.highRiskDose = maxCh
+params.strategy = SprayStrategies.AltLoHi
+simLH_github = Simulation(params)
+simLH_github.run()
+
+clty_rec_ch60 = calcLifetimeYield((simLH_rec[2]/2),dfyRec)
+clty_github_ch60 = calcLifetimeYield(simLH_github.yields,dfyGithub)
+print('Lifetime Yield')
+print('Recreation: ', clty_rec_ch60[0], '   GitHub: ', clty_github_ch60[0])
+
+print('Final Yield')
+print('Recreation: ', clty_rec_ch60[1], '   GitHub: ', clty_github_ch60[1])
+
+print('Number of Seasons')
+print('Recreation: ', clty_rec_ch60[2], '   GitHub: ', clty_github_ch60[2])
+
+
 
 # %%
