@@ -22,7 +22,10 @@ def elderfieldOdeSystem(time,X):
     dCl = -delta_l*Cl
     dA = dS + dEr + dEs + dIr + dIs + dR
     return np.array([dS, dEr, dEs, dIr, dIs, dR, dPr, dPs, dCh, dCl, dA])
-    
+
+# James' verion of above is Simulation.WheatSeptoria
+
+
 def runChunk(X,time,controlFunction,wantYield, maxCl, maxCh): # integrates over t and adds results to existing array
     S,Er,Es,Ir,Is,R,Pr,Ps,Ch,Cl,A = X
     Cl[-1],Ch[-1],controlName = controlFunction(time[0],Cl,Ch,maxCl,maxCh)
