@@ -456,16 +456,16 @@ class Simulation(object):
 
     @staticmethod
     def wheatSeptoria(t, y, params):
-        S = y[StateIndices.S]
-        ER = y[StateIndices.ER]
-        ES = y[StateIndices.ES]
-        IR = y[StateIndices.IR]
-        IS = y[StateIndices.IS]
-        R = y[StateIndices.R]
-        PR = y[StateIndices.PR]
-        PS = y[StateIndices.PS]
-        high = y[StateIndices.high]
-        low = y[StateIndices.low]
+        S = y[0]
+        ER = y[1]
+        ES = y[2]
+        IR = y[3]
+        IS = y[4]
+        R = y[5]
+        PR = y[6]
+        PS = y[7]
+        high = y[8]
+        low = y[9]
 
         timeSinceSeasonStart = t % (params.GS87 - params.seasonStartTime) # remainder or the time/(season length), AKA time since season started
 
@@ -500,7 +500,7 @@ class Simulation(object):
 
         if params.densityDependentInfection: # if density dependance is true (it is by default), have growth rate dependent on A (as in paper)
             hostGrowth = params.r * (params.k - A)
-            dydt[StateIndices.S] = hostGrowth - senescence * S - (infectionByR + infectionByS) # updating change in state S
+            dydt[0] = hostGrowth - senescence * S - (infectionByR + infectionByS) # updating change in state S
 
         if params.latentPeriod: # if latent period is true, find effects of fungicide on maturation from E to I (might be more complex in powdery mildew model, hence the weirdness)
             effectOnRMaturation = 1 - params.lowRisk.effect(low, FungicideEffectType.Eradicant) # IDFU, since 'low' and 'Eradicant', this evaluates to 1
@@ -513,27 +513,29 @@ class Simulation(object):
             maturationOfR = params.gamma * ER * effectOnRMaturation # why is the fungicide here?
             maturationOfS = params.gamma * ES * effectOnSMaturation # why is Cl here?
 
-            dydt[StateIndices.ER] = infectionByR - senescence * ER - maturationOfR # updating change in state ER
-            dydt[StateIndices.ES] = infectionByS - senescence * ES - maturationOfS # updating change in state ES
-            dydt[StateIndices.IR] = maturationOfR - deathOfR # updating change in state IR
-            dydt[StateIndices.IS] = maturationOfS - deathOfS # updating change in state IS
+            dydt[1] = infectionByR - senescence * ER - maturationOfR # updating change in state ER
+            dydt[2] = infectionByS - senescence * ES - maturationOfS # updating change in state ES
+            dydt[3] = maturationOfR - deathOfR # updating change in state IR
+            dydt[4] = maturationOfS - deathOfS # updating change in state IS
         else:
-            dydt[StateIndices.IR] = infectionByR - deathOfR # updating change in state IR (if no latent period)
-            dydt[StateIndices.IS] = infectionByS - deathOfS # updating change in state IS (if no latent period)
+            dydt[3] = infectionByR - deathOfR # updating change in state IR (if no latent period)
+            dydt[4] = infectionByS - deathOfS # updating change in state IS (if no latent period)
 
-        dydt[StateIndices.R] = deathOfS + deathOfR + senescence * (ER + ES + S) # updating change in state R
+        dydt[5] = deathOfS + deathOfR + senescence * (ER + ES + S) # updating change in state R
 
         if params.seasonality: # adding decay of initial innoculum if seasonality is used (it is by default)
             decayOfR = params.nu * PR # decay of PR
             decayOfS = params.nu * PS # decay of PS
-            dydt[StateIndices.PR] = -decayOfR # updating change in state PR
-            dydt[StateIndices.PS] = -decayOfS # updating change in state PS
+            dydt[6] = -decayOfR # updating change in state PR
+            dydt[7] = -decayOfS # updating change in state PS
 
         if params.fungicideDecay: # if decay of fungicides is true, adds it to the system
             highRiskDecay = params.highRisk.decayRate * high # 
             lowRiskDecay = params.lowRisk.decayRate * low
-            dydt[StateIndices.high] = -highRiskDecay # updating change in fungicide concentration for high-risk
-            dydt[StateIndices.low] = -lowRiskDecay # updating change in fungicide concentration for low-risk
+            dydt[8] = -highRiskDecay # updating change in fungicide concentration for high-risk
+            dydt[9] = -lowRiskDecay # updating change in fungicide concentration for low-risk
+        
+        dydt[10] = dydt[0] + dydt[1] + dydt[2] + dydt[3] + dydt[4] + dydt[5] # area
 
         for i, v in enumerate(y):
             if v > 1E15:
