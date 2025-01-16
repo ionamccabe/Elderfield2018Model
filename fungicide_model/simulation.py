@@ -25,7 +25,7 @@ class Simulation(object):
         self.yieldStop = stopOnYieldFailure
         self.output = None
 
-    integrator = "lsoda"
+    integrator = "lsoda" # setting up integrator to be 'lsoda'
     outputRate = 1
     maxRunTime = 50
 
@@ -66,12 +66,12 @@ class Simulation(object):
         else:
             raise RuntimeError("Unrecognised model: " + self.params.model)
 
-        solver = ode(f).set_integrator(Simulation.integrator, nsteps = 1E3)
-        solver.set_f_params(self.params)
+        solver = ode(f).set_integrator(Simulation.integrator, nsteps = 1E3) # setting up ode() solver, integrator is 'lsoda' from above
+        solver.set_f_params(self.params) # setting parameters
 
-        state = [0 for x in range(11)]
+        state = [0 for x in range(11)] # setting all states to 0
 
-        solver.set_initial_value(state, 0)
+        solver.set_initial_value(state, 0) # initial values: states (from above) and t=0
 
         lastOutput = None
 
@@ -86,7 +86,7 @@ class Simulation(object):
 
         self.params.rFreq = self.params.psi
 
-        stopSimulation = False
+        stopSimulation = False # what does this do?
 
         # Needs to run for at least a season for selection ratio calculation
         if self.params.model == Model.WheatSeptoria:
@@ -94,37 +94,37 @@ class Simulation(object):
         elif self.params.model == Model.GrapePowderyMildew:
             minimumRunTime = self.params.seasonEndTime - self.params.budBreakTime
 
-        while solver.t < self.params.maxTime:
-            runTil = min(
+        while solver.t < self.params.maxTime: # while the integrated time is less than the max time
+            runTil = min( # run until next event, idk, max time, or idk
                 nextStepTime,
-                float("inf") if lastOutput is None else lastOutput + Simulation.outputRate,
+                float("inf") if lastOutput is None else lastOutput + Simulation.outputRate, # lastOutput is solver.t, outputRate = 1, logging rate
                 self.params.maxTime,
-                solver.t + Simulation.maxRunTime
+                solver.t + Simulation.maxRunTime # 
             )
 
-            if runTil > solver.t:
+            if runTil > solver.t: # run until time runTil
                 solver.integrate(runTil)
 
             if not solver.successful():
                 raise RuntimeError("Solver failed.")
 
-            newState = solver.y
+            newState = solver.y # assigning the solution to be a new state
 
-            for i, v in enumerate(newState):
+            for i, v in enumerate(newState): # making sure the states are never negative
                 if v < 0:
                     newState[i] = 0
 
-            solver.set_initial_value(newState, solver.t)
+            solver.set_initial_value(newState, solver.t) # setting new solution and end time as initial conditions
 
-            while solver.t == nextStepTime:
-                solver.set_initial_value(changes[nextStepChangeIndex].apply(solver.y), solver.t)
+            while solver.t == nextStepTime: # when the solver reaches a time step
+                solver.set_initial_value(changes[nextStepChangeIndex].apply(solver.y), solver.t) 
 
-                nextStepChangeIndex += 1
-                if nextStepChangeIndex >= len(changes):
+                nextStepChangeIndex += 1 # next step change
+                if nextStepChangeIndex >= len(changes): # if there are no more step changes, set nextStepTime to infitiy
                     nextStepTime = float("inf")
-                else:
+                else: # otherwise set to the next step time
                     nextStepTime = changes[nextStepChangeIndex].time
-            if lastOutput is None or solver.t == lastOutput + Simulation.outputRate:
+            if lastOutput is None or solver.t == lastOutput + Simulation.outputRate: # log the first one, then +1 after (repetedly)
                 outputList.append(Simulation._dictStateFromSolver(solver))
 
                 lastOutput = solver.t
@@ -467,79 +467,79 @@ class Simulation(object):
         high = y[StateIndices.high]
         low = y[StateIndices.low]
 
-        timeSinceSeasonStart = t % (params.GS87 - params.seasonStartTime)
+        timeSinceSeasonStart = t % (params.GS87 - params.seasonStartTime) # remainder or the time/(season length), AKA time since season started
 
-        A = S + ER + ES + IR + IS + R
+        A = S + ER + ES + IR + IS + R # total leaf area
 
-        GS61 = params.GS61 - params.seasonStartTime
-        GS87 = params.GS87 - params.seasonStartTime
+        GS61 = params.GS61 - params.seasonStartTime # finding the time of GS61 relative to the start of the season
+        GS87 = params.GS87 - params.seasonStartTime # finding the time of GS87 relative to the start of the season
 
-        if params.seasonality and timeSinceSeasonStart >= GS61:
+        if params.seasonality and timeSinceSeasonStart >= GS61: # adding senescence if seasonality is used (it is by default)
             senescence = 0.005 * (timeSinceSeasonStart - GS61) / (GS87 - GS61) + 0.1 * exp(0.02 * (timeSinceSeasonStart - GS87))
         else:
             senescence = 0
 
-        effectOnRInfection = 1 - params.lowRisk.effect(low, FungicideEffectType.Protectant)
-        effectOnSInfection = 1 - Fungicide.combineEffects(
+        effectOnRInfection = 1 - params.lowRisk.effect(low, FungicideEffectType.Protectant)  # IDFU, uses the effect func from fungicide.py (exponential function)
+        effectOnSInfection = 1 - Fungicide.combineEffects( # similar to above, but uses combineEffects, which is (presumably) both
             [params.highRisk, params.lowRisk],
             [high, low],
             FungicideEffectType.Protectant
         )
 
-        infectionByR = params.beta * effectOnRInfection * (IR + PR)
-        infectionByS = params.beta * effectOnSInfection * (IS + PS)
+        infectionByR = params.beta * effectOnRInfection * (IR + PR) # infection term, missing S/A
+        infectionByS = params.beta * effectOnSInfection * (IS + PS) # infection term, missing S/A
 
-        if params.densityDependentInfection:
+        if params.densityDependentInfection: # if density dependance is true (it is by default), multiple by S/A (as in the paper)
             infectionByR *= S / A
             infectionByS *= S / A
 
-        deathOfR = params.mu * IR
-        deathOfS = params.mu * IS
+        deathOfR = params.mu * IR # death of Ir
+        deathOfS = params.mu * IS # death of Is
 
-        dydt = [0 for x in range(11)]
+        dydt = [0 for x in range(11)] # vector for the change in each state class
 
-        if params.densityDependentInfection:
+        if params.densityDependentInfection: # if density dependance is true (it is by default), have growth rate dependent on A (as in paper)
             hostGrowth = params.r * (params.k - A)
-            dydt[StateIndices.S] = hostGrowth - senescence * S - (infectionByR + infectionByS)
+            dydt[StateIndices.S] = hostGrowth - senescence * S - (infectionByR + infectionByS) # updating change in state S
 
-        if params.latentPeriod:
-            effectOnRMaturation = 1 - params.lowRisk.effect(low, FungicideEffectType.Eradicant)
-            effectOnSMaturation = 1 - Fungicide.combineEffects(
+        if params.latentPeriod: # if latent period is true, find effects of fungicide on maturation from E to I (might be more complex in powdery mildew model, hence the weirdness)
+            effectOnRMaturation = 1 - params.lowRisk.effect(low, FungicideEffectType.Eradicant) # IDFU, since 'low' and 'Eradicant', this evaluates to 1
+            effectOnSMaturation = 1 - Fungicide.combineEffects( # IDFU, 'low' and 'eradicant' evaluates to 1, but 'high' is same as effectOnSInfection
                 [params.highRisk, params.lowRisk],
                 [high, low],
                 FungicideEffectType.Eradicant
             )
 
-            maturationOfR = params.gamma * ER * effectOnRMaturation
-            maturationOfS = params.gamma * ES * effectOnSMaturation
+            maturationOfR = params.gamma * ER * effectOnRMaturation # why is the fungicide here?
+            maturationOfS = params.gamma * ES * effectOnSMaturation # why is Cl here?
 
-            dydt[StateIndices.ER] = infectionByR - senescence * ER - maturationOfR
-            dydt[StateIndices.ES] = infectionByS - senescence * ES - maturationOfS
-            dydt[StateIndices.IR] = maturationOfR - deathOfR
-            dydt[StateIndices.IS] = maturationOfS - deathOfS
+            dydt[StateIndices.ER] = infectionByR - senescence * ER - maturationOfR # updating change in state ER
+            dydt[StateIndices.ES] = infectionByS - senescence * ES - maturationOfS # updating change in state ES
+            dydt[StateIndices.IR] = maturationOfR - deathOfR # updating change in state IR
+            dydt[StateIndices.IS] = maturationOfS - deathOfS # updating change in state IS
         else:
-            dydt[StateIndices.IR] = infectionByR - deathOfR
-            dydt[StateIndices.IS] = infectionByS - deathOfS
+            dydt[StateIndices.IR] = infectionByR - deathOfR # updating change in state IR (if no latent period)
+            dydt[StateIndices.IS] = infectionByS - deathOfS # updating change in state IS (if no latent period)
 
-        dydt[StateIndices.R] = deathOfS + deathOfR + senescence * (ER + ES + S)
+        dydt[StateIndices.R] = deathOfS + deathOfR + senescence * (ER + ES + S) # updating change in state R
 
-        if params.seasonality:
-            decayOfR = params.nu * PR
-            decayOfS = params.nu * PS
-            dydt[StateIndices.PR] = -decayOfR
-            dydt[StateIndices.PS] = -decayOfS
+        if params.seasonality: # adding decay of initial innoculum if seasonality is used (it is by default)
+            decayOfR = params.nu * PR # decay of PR
+            decayOfS = params.nu * PS # decay of PS
+            dydt[StateIndices.PR] = -decayOfR # updating change in state PR
+            dydt[StateIndices.PS] = -decayOfS # updating change in state PS
 
-        if params.fungicideDecay:
-            highRiskDecay = params.highRisk.decayRate * high
+        if params.fungicideDecay: # if decay of fungicides is true, adds it to the system
+            highRiskDecay = params.highRisk.decayRate * high # 
             lowRiskDecay = params.lowRisk.decayRate * low
-            dydt[StateIndices.high] = -highRiskDecay
-            dydt[StateIndices.low] = -lowRiskDecay
+            dydt[StateIndices.high] = -highRiskDecay # updating change in fungicide concentration for high-risk
+            dydt[StateIndices.low] = -lowRiskDecay # updating change in fungicide concentration for low-risk
 
         for i, v in enumerate(y):
             if v > 1E15:
                 dydt[i] = 0
 
-        return dydt
+        return dydt # returns change in each class (same as mine)
 
     @staticmethod
     def grapePowderyMildew(t, y, params):
