@@ -261,7 +261,6 @@ class Parameters(object):
         self.r = 1.26E-2
 
         self.nu = 8.5E-3
-        self.Emerge = 1212
         self.GS32 = 1456
         self.GS39 = 1700
         self.GS61 = 2066
@@ -274,6 +273,10 @@ class Parameters(object):
         self._fungicideDecay = True
         self._seasonality = True
         self._latentPeriod = True
+
+        # added to match mine
+        self.seasonLength = 3000  # Degree-days
+        self.Emerge = 1212 # added to match mine
 
         self._setFittedParams()
 
