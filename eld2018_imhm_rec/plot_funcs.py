@@ -41,6 +41,7 @@ def plotDynamics(numSeasons,sWC_output):
     axs[0, 0].set_title("Susceptible and Removed")
     axs[0, 0].plot(t, S, 'orange', label='Susceptible')
     axs[0, 0].plot(t, R, 'b', label='Removed')
+    axs[0, 1].plot(t, Es, 'g', label='Latent: Sensitive')
     add_vertical_lines(axs[0, 0],numSeasons)
     axs[0, 0].set_xticks(season_ticks)
     axs[0, 0].set_xticklabels(season_labels)
